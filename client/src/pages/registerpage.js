@@ -46,7 +46,6 @@ export default function Registerpage() {
     return (
         
         <Container className="App border p-3 shadow">
-
         <h2 className="text-center">Register</h2>
         {error?
         <Alert color="danger">

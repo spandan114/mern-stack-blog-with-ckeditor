@@ -13,10 +13,10 @@ const userSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-    // pic:{
-    //  type:String,
-    //  default:"https://res.cloudinary.com/cnq/image/upload/v1586197723/noimage_d4ipmd.png"
-    // }
+    pic:{
+     type:String,
+     default:"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=140&q=80"
+    }
  
 })
 

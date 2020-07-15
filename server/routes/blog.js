@@ -6,48 +6,51 @@ const  auth  = require("../middleware/requireLogin");
 const multer = require("multer");
 
 // STORAGE MULTER CONFIG
-let storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, "uploads/");
+// multer configuration to storing files to disk
+const storage = multer.diskStorage({
+    // directory where file being stored
+    destination: function(req, file, cb) {
+      cb(null, `${__dirname}/../../client/public/uploads/`);
     },
-    filename: (req, file, cb) => {
-        cb(null, `${Date.now()}_${file.originalname}`);
-    },
-    fileFilter: (req, file, cb) => {
-        const ext = path.extname(file.originalname)
-        if (ext !== '.jpg' && ext !== '.png' && ext !== '.mp4') {
-            return cb(res.status(400).end('only jpg, png, mp4 is allowed'), false);
-        }
-        cb(null, true)
+    // generate new name for file being uploaded
+    filename: function(req, file, cb) {
+      cb(null, Date.now() + file.originalname);
     }
-});
-
-const upload = multer({ storage: storage }).single("file");
+  });
+  
+  // filter file being uploaded
+  const fileFilter = (req, file, cb) => {
+    if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
+      cb(null, true);
+    } else {
+      // rejects storing a file
+      cb(null, false);
+    }
+  };
+  
+  // configure multer middleware
+  const upload = multer({
+    storage: storage,
+    limits: {
+      // limit file being uploaded
+      fileSize: 1024 * 1024 * 5
+    },
+    fileFilter: fileFilter
+  });
 
 //=================================
 //             Blog
 //=================================
 
-// fieldname: 'file',
-// originalname: 'React.png',
-// encoding: '7bit',
-// mimetype: 'image/png',
-// destination: 'uploads/',
-// filename: '1573656172282_React.png',
-// path: 'uploads/1573656172282_React.png',
-// size: 24031 
 
-router.post("/uploadfiles",auth, (req, res) => {
-    upload(req, res, err => {
-        if (err) {
-            return res.json({ success: false, err });
-        }
-        return res.json({ success: true, url: res.req.file.path, fileName: res.req.file.filename });
-    });
-});
+router.post("/uploadfiles", upload.single("imageData"), (req, res, next) => {
+      imageName= req.file.filename,
+      imageData= req.file.path
+      res.status(200).json({success: true,document: imageName });
+  });
 
 router.post("/createPost", (req, res) => {
-    let blog = new Blog({ content: req.body.content, writer: req.body.userID });
+    let blog = new Blog({ content: req.body.content, writer: req.body.userID,image: req.body.image });
 
     blog.save((err, postInfo) => {
         if (err) return res.json({ success: false, err });

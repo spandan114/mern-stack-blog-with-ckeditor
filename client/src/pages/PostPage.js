@@ -20,14 +20,34 @@ export const PostPage = () => {
             return (
 
         <div className="container mt-5" >
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <p>{bloag[0].writer.name}`s Post</p>
-            <p >{bloag[0].createdAt}</p>
-        </div>
-          <div dangerouslySetInnerHTML={{ __html: bloag[0].content }} />
-        </div>
+        <div className="row">
+            <div className="col-md-8">
+              <h2 className="text-secondary text-uppercase">Blog content</h2>
+                <div className=" p-3">
 
-            )
+                    <div className="border p-2 rounded-pill" style={{ display: 'flex', justifyContent: 'space-between', }}>
+                        <div className="d-flex" >
+                         <img src={bloag[0].writer.pic}  style={{ width:50,borderRadius:50 }} alt="nnn" />
+                         <p className="ml-3" style={{margin: "auto"}}> <strong>{bloag[0].writer.name} `s Post</strong></p>
+                        </div>
+                        <p  style={{margin: "auto"}}>{bloag[0].createdAt}</p>
+                    </div>
+
+                    <div className="content p-3 mt-3" style={{border: '1.5px solid #dfe6e9',borderRadius: '62px 0px 62px 0px'}}>
+                        <h1 className="text-dark mb-2">{bloag[0].title}</h1>
+                        <img style={{ width: '100%' }} src={`/uploads/${bloag[0].image}`} alt='' />
+                        <div className="mt-3 text-dark" dangerouslySetInnerHTML={{ __html: bloag[0].content }} />
+                    </div>
+
+                </div>
+            </div>
+            <div className="col-md-4 p-3">
+                <h3 className="text-secondary text-uppercase">Recent Posts</h3>
+                <h4 className="text-secondary text-uppercase">tag's</h4>
+            </div>
+        </div>
+        </div>
+           ) 
         }else{
             return (
                 <div className="container mt-5" >

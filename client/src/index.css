@@ -35,9 +35,9 @@
   transform: translateX(-100%);
  }
 */
-
 .App {
-  text-align: center;
+  max-width: 30rem;
+  margin: 4rem auto;
 }
 
 .App-logo {

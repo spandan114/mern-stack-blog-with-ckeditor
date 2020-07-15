@@ -20,10 +20,16 @@ const EditBlog = () => {
         const blog = useSelector(state => state.BlogReducer.blog)
         const user = useSelector(state => state.authReducer.user)
         const [content, setContent] = useState()
+        const [title, setTitle] = useState("")
 
         useEffect(() => {
             dispatch(getblogbyId(id))
         }, [id])
+
+
+        // setTitle(blog?blog[0].title:"loading...")
+
+        console.log(title)
 
         const onSubmit = (event) => {
             event.preventDefault();
@@ -32,6 +38,7 @@ const EditBlog = () => {
                 return alert('Please Log in first');
             }
             const variables = {
+                title:title,
                 content: content
             }
             dispatch(updateBlogs(id,variables))
@@ -41,7 +48,19 @@ const EditBlog = () => {
 
         return(
         <div className="container mt-5">
-        <h2>Using CKEditor 5 build in React</h2>
+        <h2>Edit Bloog</h2>
+
+        <div>
+
+        <div class="form-group">
+            <label>Blog Title</label>
+            <input type="text" 
+            class="form-control"
+             placeholder="Blog title"                 
+             value={title}
+             onChange={(e)=>setTitle(e.target.value)} />
+        </div>
+
         <CKEditor
             editor={ ClassicEditor }
             data={blog?blog[0].content:"loading..."}
@@ -63,6 +82,7 @@ const EditBlog = () => {
                     </button>
                     </div>
                 </form>
+            </div>
         </div>
         )
 }

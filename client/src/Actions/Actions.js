@@ -6,13 +6,12 @@ import * as blogconst from './constants/blogConstants'
 //===========================================USER ACTION===========================
 
 //REGISTER USER
-export const register = (contact) => {
+export const register = (contact) => dispatch => {
   api.User().register(contact)
       .then(res => {
         console.log(res,contact)
       })
       .catch(err => console.log(err))
-
 }
 //LOGIN USER
 export const login = (contact) => dispatch => {

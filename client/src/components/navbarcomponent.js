@@ -59,7 +59,7 @@ export default function Navbarcomponent() {
         <nav
           className="navbar navbar-expand-lg navbar-dark bg-dark justify-content-sm-start  fixed-top"
       >
-        <Link className="navbar-brand order-1 font-weight-bold order-lg-0 ml-3" to="/">BOILERPLATE</Link>
+        <Link className="navbar-brand order-1 font-weight-bold order-lg-0 ml-3" to="/">BLOG </Link>
   
         {/* --mr-3 for left sidebar-- */}
         <button className="navbar-toggler align-self-start" type="button">
