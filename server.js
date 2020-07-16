@@ -26,7 +26,7 @@ app.use('/api/blog', require('./routes/blog'));
 
 //===========PORT SETTING============//
 
-const port = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5000
 
 if(process.env.NODE_ENV=="production"){
   app.use(express.static('client/build'))
@@ -36,4 +36,6 @@ if(process.env.NODE_ENV=="production"){
   })
 }
 
-app.listen(port, () => console.log(`Server running on port port ${port}`));
+app.listen(PORT,()=>{
+  console.log("server is running on",PORT)
+})
