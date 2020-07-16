@@ -8,7 +8,7 @@ app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 //============= MONGOOSE SETTING ==============//
 mongoose
-  .connect("mongodb+srv://spandan:spandan1234@cluster0-3cnzz.mongodb.net/blog?retryWrites=true&w=majority",
+  .connect(MONGO_URI,
     {
         useCreateIndex: true,
         useUnifiedTopology: true,
