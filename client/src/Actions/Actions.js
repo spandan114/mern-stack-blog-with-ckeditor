@@ -44,10 +44,9 @@ export const relode = (data) => ({
 export const getAllblogs = () => dispatch => {
   blogapi.Blog().getAllblogs()
       .then(res => {
-        // console.log(res.data.blogs)
           dispatch({
               type: blogconst.FETCH_ALL_BLOGS,
-              payload: res.data.blogs
+              payload: res.data
           })
       })
       .catch(err => console.log(err))
@@ -88,9 +87,16 @@ export const getAllblogs = () => dispatch => {
           .catch(err => console.log(err))
     }
 
-    // export const getblogbyId = (id) => dispatch => {
-    //   dispatch({
-    //     type: blogconst.FETCH_BLOG_BY_ID,
-    //     payload : id
-    //   })
-    //   }
+        //CREATE BLOG 
+        export const createblog = (data) => dispatch => {
+          blogapi.Blog().creaeBlog(data)
+              .then(res => {
+                console.log(res.data)
+                  dispatch({
+                      type: blogconst.CREATE_BLOG,
+                      payload: res.data
+                  })
+              })
+              .catch(err => console.log(err))
+        }
+

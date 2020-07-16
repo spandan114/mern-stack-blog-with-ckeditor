@@ -35,7 +35,7 @@ export const PostPage = () => {
 
                     <div className="content p-3 mt-3" style={{border: '1.5px solid #dfe6e9',borderRadius: '62px 0px 62px 0px'}}>
                         <h1 className="text-dark mb-2">{bloag[0].title}</h1>
-                        <img style={{ width: '100%' }} src={`/uploads/${bloag[0].image}`} alt='' />
+                        <img style={{ width: '100%',height:'100%',objectFit:"cover"}} src={`/uploads/${bloag[0].image}`} alt='' className="mx-auto"  />
                         <div className="mt-3 text-dark" dangerouslySetInnerHTML={{ __html: bloag[0].content }} />
                     </div>
 

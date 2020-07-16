@@ -2,8 +2,10 @@ import React,{useState,useEffect} from 'react'
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import axios from 'axios';
-import { useSelector } from "react-redux";
+import {useDispatch,useSelector} from 'react-redux';
 import {useHistory} from 'react-router-dom'
+import {createblog} from "../Actions/Actions"
+const token = localStorage.getItem("jwt")
 
 
 const editorConfiguration = {
@@ -16,13 +18,31 @@ const editorConfiguration = {
 const CreateBlogpost = () => {
 
         const history = useHistory()
+        const dispatch = useDispatch();
         const user = useSelector(state => state.authReducer.user)
         const [content, setContent] = useState("")
         const [title, setTitle] = useState("")
         const [file, setFile] = useState()
         const [filename, setFilename] = useState('Choose File');
         const [uploadedFile, setUploadedFile] = useState({});
+        const [message, setMessage] = useState();
 
+
+
+        const messages = () =>{
+            return(
+                <>{
+                message?
+                <div className={`alert alert-dismissible fade show ${message.success?"alert-success":"alert-danger"} `} role="alert">
+                    <strong>{message.success?message.success:message.error}</strong> 
+                    <button type="button" className="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                :""
+                }
+                </>
+            )}
 
         const Upload =(e) => {
             e.preventDefault();
@@ -32,27 +52,27 @@ const CreateBlogpost = () => {
 
             let imageFormObj = new FormData();
             imageFormObj.append("imageName", "multer-image-" + Date.now());
-            imageFormObj.append("imageData", file);
+            imageFormObj.append("imageData", e.target.files[0]);
 
-            axios.post(`/api/blog/uploadfiles`, imageFormObj).then(data => {
-                console.log(data)
+
+            axios.post('/api/blog/uploadfiles', imageFormObj).then(data => {
+                console.log(data.data.message)
               if (data.data.success) {
                 //   console.log(data.data.document)
+                  setMessage(data.data.message)
                   setUploadedFile(data.data.document)
                 alert("Image has been successfully uploaded using multer");
               }
             });
+
           }
 
         const onSubmit = (event) => {
             event.preventDefault();
-
             setContent("");
-
             if (user == null) {
                 return alert('Please Log in first');
             }
-
             const variables = {
                 title:title,
                 image:uploadedFile,
@@ -60,21 +80,28 @@ const CreateBlogpost = () => {
                 userID: user._id,
             }
 
-            axios.post('/api/blog/createPost', variables)
-                .then(response => {
-                    if (response) {
-                        console.log('Post Created!');
+            dispatch(createblog(variables))
+            setTimeout(() => {
+                 history.push('/blog')
+             }, 2000);
 
-                        setTimeout(() => {
-                            history.push('/blog')
-                        }, 2000);
-                    }
-                })
+            // axios.post('/api/blog/createPost', variables,{ headers: {"Authorization" : `Bearer ${token}`} })
+            //     .then(response => {
+            //         if (response) {
+            //             console.log('Post Created!');
+
+            //             setTimeout(() => {
+            //                 history.push('/blog')
+            //             }, 2000);
+            //         }
+            //     })
         }
 
         return(
         <div className="container mt-5">
         <h2>Create blog</h2>
+
+        {messages()}
 
         <div>
 {/* (e)=>setFileName(e.target.files[0].name) */}
@@ -89,7 +116,7 @@ const CreateBlogpost = () => {
             </form>
         </div>
 
-        <img style={{ width: '100%' }} src={`uploads/${uploadedFile}`} alt='' />
+        <img style={{ width: '100%' }} src={`/uploads/${uploadedFile}`} alt='' />
 
         <div className="form-group">
             <label>Blog Title</label>

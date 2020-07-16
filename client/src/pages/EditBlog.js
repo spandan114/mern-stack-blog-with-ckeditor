@@ -4,6 +4,8 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import {useHistory,useParams} from 'react-router-dom'
 import {useDispatch,useSelector} from 'react-redux';
 import {updateBlogs,getblogbyId} from '../Actions/Actions'
+import axios from 'axios';
+const token = localStorage.getItem("jwt")
 
 const editorConfiguration = {
     // plugins: [ Indent],
@@ -20,16 +22,38 @@ const EditBlog = () => {
         const blog = useSelector(state => state.BlogReducer.blog)
         const user = useSelector(state => state.authReducer.user)
         const [content, setContent] = useState()
-        const [title, setTitle] = useState("")
+        const [title, setTitle] = useState()
+        const [filename, setFilename] = useState('Choose File');
+        const [uploadedFile, setUploadedFile] = useState({});
 
         useEffect(() => {
+            if(blog !== null){
+                setUploadedFile(blog[0].image)
+                setTitle(blog[0].title)
+                setContent(blog[0].content)
+            }
             dispatch(getblogbyId(id))
-        }, [id])
+        }, [blog && id])
+    
 
+        const Upload =(e) => {
+            e.preventDefault();
 
-        // setTitle(blog?blog[0].title:"loading...")
+            setFilename(e.target.files[0].name)
 
-        console.log(title)
+            let imageFormObj = new FormData();
+            imageFormObj.append("imageName", "multer-image-" + Date.now());
+            imageFormObj.append("imageData", e.target.files[0]);
+
+            axios.post(`/api/blog/uploadfiles`, imageFormObj,{ headers: {"Authorization" : `Bearer ${token}`} }).then(data => {
+                console.log(data)
+              if (data.data.success) {
+                //   console.log(data.data.document)
+                  setUploadedFile(data.data.document)
+                alert("Image has been successfully uploaded using multer");
+              }
+            });
+          }
 
         const onSubmit = (event) => {
             event.preventDefault();
@@ -39,6 +63,7 @@ const EditBlog = () => {
             }
             const variables = {
                 title:title,
+                image:uploadedFile,
                 content: content
             }
             dispatch(updateBlogs(id,variables))
@@ -52,14 +77,28 @@ const EditBlog = () => {
 
         <div>
 
-        <div class="form-group">
+        <div className="input-group mb-3">
+        <form>
+            <div className="custom-file">
+                <input type="file" 
+                className="custom-file-input"
+                 onChange={Upload } />
+                <label className="custom-file-label">{filename}</label>
+            </div>
+            </form>
+        </div>
+
+        <img style={{ width: '100%' }} src={`/uploads/${uploadedFile}`} alt='' />
+
+        <div className="form-group">
             <label>Blog Title</label>
             <input type="text" 
-            class="form-control"
+            className="form-control"
              placeholder="Blog title"                 
              value={title}
              onChange={(e)=>setTitle(e.target.value)} />
         </div>
+
 
         <CKEditor
             editor={ ClassicEditor }

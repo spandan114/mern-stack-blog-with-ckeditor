@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const { Blog } = require("../models/Blog");
-
 const  auth  = require("../middleware/requireLogin");
+
+
 const multer = require("multer");
 
 // STORAGE MULTER CONFIG
@@ -43,14 +44,18 @@ const storage = multer.diskStorage({
 //=================================
 
 
-router.post("/uploadfiles", upload.single("imageData"), (req, res, next) => {
+router.post("/uploadfiles", upload.single("imageData"), (req, res) => {
+  if(req.file){
       imageName= req.file.filename,
       imageData= req.file.path
-      res.status(200).json({success: true,document: imageName });
+      res.status(200).json({success: true,document: imageName ,message:{success:"image uploded successfully" } });
+  }else{
+      res.json({success: false ,message:{error:"Unable to upload image try again" } });
+  }
   });
 
-router.post("/createPost", (req, res) => {
-    let blog = new Blog({ content: req.body.content, writer: req.body.userID,image: req.body.image });
+router.post("/createPost",auth, (req, res) => {
+    let blog = new Blog({ content: req.body.content, writer: req.body.userID,title: req.body.title,image: req.body.image });
 
     blog.save((err, postInfo) => {
         if (err) return res.json({ success: false, err });
@@ -63,8 +68,8 @@ router.get("/getBlogs", (req, res) => {
     Blog.find()
         .populate("writer")
         .exec((err, blogs) => {
-            if (err) return res.status(400).send(err);
-            res.status(200).json({ success: true, blogs });
+            if (err) return res.status(400).json({ success: false,message:{error:"somthing went wrong" }});
+            res.status(200).json({ success: true, blogs,message:{success:"successfully fetch all data" }});
         });
 });
 
@@ -77,7 +82,7 @@ router.post("/getPost/:id", (req, res) => {
         })
 });
 
-router.put('/updatePost/:id',(req,res) =>{
+router.put('/updatePost/:id',auth,(req,res) =>{
 
     const {content} = req.body
     if(!content){
@@ -85,14 +90,14 @@ router.put('/updatePost/:id',(req,res) =>{
      }
 
     const Id  = req.params.id;
-    Blog.findByIdAndUpdate({_id:Id}, { $set: {content: req.body.content }},{new:true})
+    Blog.findOneAndUpdate({_id:Id}, { $set: {title: req.body.title,image: req.body.image ,content: req.body.content}},{new:true})
     .then(data =>{
         res.json(data)
     }).catch(err=>{console.log(err)})
 
 })
 
-router.delete('/deletePost/:id',(req,res) =>{
+router.delete('/deletePost/:id',auth,(req,res) =>{
     Blog.findOne({_id:req.params.id})
     .then(data=>{
         data.remove()

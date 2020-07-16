@@ -8,6 +8,8 @@ function BlogPage() {
 
     const dispatch = useDispatch();
     const blog = useSelector(state => state.BlogReducer.blog)
+    const message = useSelector(state => state.BlogReducer.message)
+
 
     useEffect(() => {
         dispatch(getAllblogs())
@@ -46,8 +48,28 @@ function BlogPage() {
     }):<Spinner/>
 
 
+    const messages = () =>{
+        return(
+            <>{
+            message?
+            <div className={`alert alert-dismissible fade show ${message.success?"alert-success":"alert-danger"} `} role="alert">
+                <strong>{message.success?message.success:message.error}</strong> 
+                <button type="button" className="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            :""
+            }
+            </>
+        )}
+
+          
+        
+        
+
     return (
         <div className="container mt-5">
+             {messages()}
             <h1 > Blog Lists </h1>
             <div className="row row-cols-1 row-cols-md-2">
             {renderCards}

@@ -1,16 +1,25 @@
 import * as blogConstants from '../Actions/constants/blogConstants'
  const initialState = {
-    blog: null
+    blog: null,
+    message:null
 };
 
 export const BlogReducer = (state = initialState, action) => {
   switch (action.type) {
+
+        //FETCH ALL BLOGS
+    case blogConstants.CREATE_BLOG:
+      console.log(action.payload)
+        return {
+          message:action.payload
+      };
     
     //FETCH ALL BLOGS
     case blogConstants.FETCH_ALL_BLOGS:
       return {
         ...state,
-        blog: action.payload
+        blog: action.payload.blogs,
+        message:null
       };
 
 
