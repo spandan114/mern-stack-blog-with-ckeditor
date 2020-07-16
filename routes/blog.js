@@ -11,7 +11,7 @@ const multer = require("multer");
 const storage = multer.diskStorage({
     // directory where file being stored
     destination: function(req, file, cb) {
-      cb(null, `${__dirname}/../../client/public/uploads/`);
+      cb(null, `${__dirname}/./../client/public/uploads/`);
     },
     // generate new name for file being uploaded
     filename: function(req, file, cb) {
