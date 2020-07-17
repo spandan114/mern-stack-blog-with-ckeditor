@@ -17,6 +17,7 @@ export default function Loginpage() {
     const [password,setPasword] = useState("")
     const [email,setEmail] = useState("")
     const [error,setError] = useState("")
+    const [spinner,setSpinner] = useState(false)
     
     useEffect(() => {
       if(user !== null){
@@ -28,6 +29,7 @@ export default function Loginpage() {
 
 
       const PostData = ()=>{
+        setSpinner(true)
         if(!/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email)){
           setError("invalid email")
             return
@@ -80,7 +82,12 @@ export default function Loginpage() {
               />
             </FormGroup>
           </Col>
-          <Button className="btn btn-block btn-info" onClick={()=>PostData()}>Login</Button>
+           {spinner == false? <Button className="btn btn-block btn-info" onClick={()=>PostData()}>Login</Button>:
+           <button className="btn btn-block btn-info" type="button" disabled>
+             <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+               Loading...
+            </button>
+           }
 
           <Link className="text-danget" to="/Forhotpassword">Forhotpassword</Link>
         

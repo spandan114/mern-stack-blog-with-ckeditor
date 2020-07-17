@@ -4,7 +4,7 @@ import {BrowserRouter,Route,Switch} from 'react-router-dom'
 import {Provider} from 'react-redux';
 import store from "./store";
 import {relode} from './Actions/Actions'
-
+import ButterToast,{ POS_RIGHT,POS_TOP } from "butter-toast";
 import Navbarcomponent from './components/navbarcomponent'
 import Homepage from './pages/homepage';
 import Loginpage from './pages/loginpage';
@@ -71,6 +71,7 @@ function App() {
     <Provider store={store}>
       <BrowserRouter >
       <Navbarcomponent/>
+      <ButterToast position={{vertical:POS_TOP,horizontal:POS_RIGHT}}/>
         <Routing />
     </BrowserRouter>
     </Provider>

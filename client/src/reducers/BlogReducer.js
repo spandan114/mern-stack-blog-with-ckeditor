@@ -7,8 +7,15 @@ import * as blogConstants from '../Actions/constants/blogConstants'
 export const BlogReducer = (state = initialState, action) => {
   switch (action.type) {
 
-        //CREATE ALL BLOGS
+        //CREATE BLOGS
     case blogConstants.CREATE_BLOG:
+      console.log(action.payload)
+        return {
+          message:action.payload.message
+      };
+
+    //UPDATE BLOG
+    case blogConstants.UPDATE_BLOG:
       console.log(action.payload)
         return {
           message:action.payload.message

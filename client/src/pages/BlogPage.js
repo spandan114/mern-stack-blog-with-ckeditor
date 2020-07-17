@@ -1,5 +1,5 @@
 import React,{useEffect} from 'react'
-import ButterToast, { Cinnamon, POS_BOTTOM, POS_RIGHT } from 'butter-toast';
+import ButterToast, { Cinnamon} from 'butter-toast';
 import {useDispatch,useSelector} from 'react-redux';
 import { getAllblogs,Deleteblogs } from '../Actions/Actions'
 import {Link } from 'react-router-dom'
@@ -9,15 +9,24 @@ function BlogPage() {
 
     const dispatch = useDispatch();
     const blog = useSelector(state => state.BlogReducer.blog)
-    const message = useSelector(state => state.BlogReducer.message)
+    // const message = useSelector(state => state.BlogReducer.message)
 
 
     useEffect(() => {
         dispatch(getAllblogs())
     },[])
 
-    const deletepost = (id) =>{
-        dispatch(Deleteblogs(id))
+    const deletepost = id => {
+        const onSuccess = () => {
+            ButterToast.raise({
+                content: <Cinnamon.Crisp title="Post Box"
+                    content="Deleted successfully"
+                    scheme={Cinnamon.Crisp.SCHEME_PURPLE}
+                />
+            })
+        }
+        if (window.confirm('Are you sure to delete this record?'))
+           dispatch(Deleteblogs(id,onSuccess))
     }
 
     const renderCards = blog?blog.map((blog, index) => {
@@ -47,40 +56,10 @@ function BlogPage() {
               </div>
         )
     }):<Spinner/>
-
-
-    const messages = () =>{
-        return(
-            <>{
-            message?
-            <>
-                 {message.success?
-                    ButterToast.raise({
-                         content: <Cinnamon.Crisp scheme={Cinnamon.Crisp.SCHEME_BLUE}
-                          content={() => <div>{message.success}</div>}
-                          title="ButterToast example"/>
-                     })
-                 :
-                 ButterToast.raise({
-                    content: <Cinnamon.Crisp scheme={Cinnamon.Crisp.SCHEME_BLUE}
-                    content={() => <div>{message.error}.</div>}
-                    title="ButterToast example"/>
-                   })
-                 }
-                 </>
-            :""
-            
-            }
-            </>
-        )}
-
-          
-        
-        
+     
 
     return (
         <div className="container mt-5">
-             {messages()}
             <h1 > Blog Lists </h1>
             <div className="row row-cols-1 row-cols-md-2">
             {renderCards}

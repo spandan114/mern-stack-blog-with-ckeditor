@@ -4,7 +4,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import {useHistory,useParams} from 'react-router-dom'
 import {useDispatch,useSelector} from 'react-redux';
 import {updateBlogs,getblogbyId} from '../Actions/Actions'
-// import axios from 'axios';
+import ButterToast, { Cinnamon } from "butter-toast";
 import Spinner from '../components/Spinner';
 // const token = localStorage.getItem("jwt")
 
@@ -22,70 +22,65 @@ const EditBlog = () => {
         const dispatch = useDispatch();
         const blog = useSelector(state => state.BlogReducer.blog)
         const user = useSelector(state => state.authReducer.user)
+        const message = useSelector(state => state.BlogReducer.message)
         const [content, setContent] = useState()
         const [title, setTitle] = useState()
         const [filename, setFilename] = useState('Choose File');
         const [uploadedFile, setUploadedFile] = useState({});
         const [loader, setLoader] = useState(false);
-        const [message, setMessage] = useState();
 
         useEffect(() => {
             if(blog !== null){
-                setUploadedFile(blog[0].image)
-                setTitle(blog[0].title)
-                setContent(blog[0].content)
+                    setUploadedFile(blog[0].image)
+                    setTitle(blog[0].title)
+                    setContent(blog[0].content)
             }
             dispatch(getblogbyId(id))
         }, [blog && id])
 
 
-        const messages = () =>{
-            return(
-                <>{
-                message?
-                <div className={`alert alert-dismissible fade show ${message.success?"alert-success":"alert-danger"} `} role="alert">
-                    <strong>{message.success?message.success:message.error}</strong> 
-                    <button type="button" className="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                :""
-                }
-                </>
-            )}
+
+            const Upload =(e) => {
+                e.preventDefault();
     
-
-        const Upload =(e) => {
-            e.preventDefault();
-
-            setLoader(true)
-            setFilename(e.target.files[0].name)
-            const data = new FormData()
-            data.append("file",e.target.files[0])
-            data.append("upload_preset","insta-clone")
-            data.append("cloud_name","cnq")
-
-            fetch("https://api.cloudinary.com/v1_1/joshi/image/upload",{
-                method:"post",
-                body:data
-            })
-            .then(res=>res.json())
-            .then(data=>{
-                if(data.url)
-                {setLoader(false)
-                setUploadedFile(data.url)
-                setMessage({success:"image successfully uploded"})
-                }else{
-                    setLoader(false)
-                    setMessage({error:"please try again . somthing went wrong !!"})
-                }
-                
-               console.log(data)
-            })
-            .catch(err=>{
-                console.log(err)
-            })
-          }
+                setLoader(true)
+                setFilename(e.target.files[0].name)
+                const data = new FormData()
+                data.append("file",e.target.files[0])
+                data.append("upload_preset","insta-clone")
+                data.append("cloud_name","cnq")
+    
+                fetch("https://api.cloudinary.com/v1_1/joshi/image/upload",{
+                    method:"post",
+                    body:data
+                })
+                .then(res=>res.json())
+                .then(data=>{
+                    if(data.url)
+                    {setLoader(false)
+                    setUploadedFile(data.url)
+                    ButterToast.raise({
+                        content: <Cinnamon.Crisp scheme={Cinnamon.Crisp.SCHEME_BLUE}
+                         content={() => <div>success</div>}
+                         title="ButterToast example"/>
+                    })
+    
+    
+                    }else{
+                        setLoader(false)
+                                ButterToast.raise({
+                                 content: <Cinnamon.Crisp scheme={Cinnamon.Crisp.SCHEME_RED}
+                                  content={() => <div>error</div>}
+                                  title="ButterToast example"/>
+                             })
+                    }
+                    
+                   console.log(data)
+                })
+                .catch(err=>{
+                    console.log(err)
+                })
+              }
 
         const onSubmit = (event) => {
             event.preventDefault();
@@ -98,18 +93,33 @@ const EditBlog = () => {
                 image:uploadedFile,
                 content: content
             }
-            dispatch(updateBlogs(id,variables))
-            
-            setTimeout(() => {
-                history.push('/blog')
-            }, 2000);
+
+            const onSuccess = () => {
+                ButterToast.raise({
+                    content: <Cinnamon.Crisp title="Post Box"
+                        content="Blog updated successfully"
+                        scheme={Cinnamon.Crisp.SCHEME_PURPLE}
+                    />
+                })
+            }
+
+            const onError = () => {
+                ButterToast.raise({
+                    content: <Cinnamon.Crisp title="Post Box"
+                        content="somthing went wronr !"
+                        scheme={Cinnamon.Crisp.SCHEME_PURPLE}
+                    />
+                })
+            }
+
+            dispatch(updateBlogs(id,variables,onSuccess,onError))
+            history.push('/Blog')
 
         }
 
         return(
         <div className="container mt-5">
         <h2>Edit Bloog</h2>
-        {messages}
         <div>
 
         <div className="input-group mb-3">
@@ -156,6 +166,7 @@ const EditBlog = () => {
                     </button>
                     </div>
                 </form>
+
             </div>
         </div>
         )

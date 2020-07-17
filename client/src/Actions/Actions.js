@@ -3,6 +3,7 @@ import blogapi from './blogapi'
 import * as authconst from './constants/authConstants'
 import * as blogconst from './constants/blogConstants'
 
+
 //===========================================USER ACTION===========================
 
 //REGISTER USER
@@ -53,16 +54,23 @@ export const getAllblogs = () => dispatch => {
 }
 
   //UPDATE BLOGS
-  export const updateBlogs = (id,data) => dispatch => {
+  export const updateBlogs = (id,data,onSuccess,onError) => dispatch => {
     blogapi.Blog().updateBlog(id,data)
         .then(res => {
-          console.log("blog updated successfully")
+          console.log(res)
+          dispatch({
+            type:blogconst.UPDATE_BLOG,
+            payload:res.data
+          })
+          onSuccess()
         })
-        .catch(err => console.log(err))
+        .catch(err =>{
+          onError()
+          console.log(err)})
   }
 
   //DELETE BLOG
-  export const Deleteblogs = (id) => dispatch => {
+  export const Deleteblogs = (id,onSuccess) => dispatch => {
     console.log(id)
     blogapi.Blog().deleteBlog(id)
         .then(res => {
@@ -70,6 +78,7 @@ export const getAllblogs = () => dispatch => {
                 type: blogconst.DELETE_BLOG,
                 payload: res.data
             })
+            onSuccess()
         })
         .catch(err => console.log(err))
   }
@@ -88,7 +97,7 @@ export const getAllblogs = () => dispatch => {
     }
 
         //CREATE BLOG 
-        export const createblog = (data) => dispatch => {
+        export const createblog = (data,onSuccess,onError) => dispatch => {
           blogapi.Blog().creaeBlog(data)
               .then(res => {
                 console.log(res.data)
@@ -96,7 +105,9 @@ export const getAllblogs = () => dispatch => {
                       type: blogconst.CREATE_BLOG,
                       payload: res.data
                   })
+                  onSuccess()
               })
-              .catch(err => console.log(err))
+              .catch(err =>{ onError()
+                 console.log(err)})
         }
 

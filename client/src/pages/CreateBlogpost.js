@@ -1,4 +1,5 @@
-import React,{useState,useEffect} from 'react'
+import React,{useState} from 'react'
+import ButterToast, { Cinnamon } from "butter-toast";
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import {useDispatch,useSelector} from 'react-redux';
@@ -18,34 +19,14 @@ const CreateBlogpost = () => {
         const history = useHistory()
         const dispatch = useDispatch();
         const user = useSelector(state => state.authReducer.user)
+        const message = useSelector(state => state.BlogReducer.message)
         const [content, setContent] = useState("")
         const [title, setTitle] = useState("")
         const [filename, setFilename] = useState('Choose File');
         const [uploadedFile, setUploadedFile] = useState();
-        const [message, setMessage] = useState();
         const [loader, setLoader] = useState(false);
-        const [userid, setUserId] = useState();
 
 
-        useEffect(() => {
-               setUserId(user?user._id:"")
-        }, [user])
-
-
-        const messages = () =>{
-            return(
-                <>{
-                message?
-                <div className={`alert alert-dismissible fade show ${message.success?"alert-success":"alert-danger"} `} role="alert">
-                    <strong>{message.success?message.success:message.error}</strong> 
-                    <button type="button" className="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                :""
-                }
-                </>
-            )}
 
         const Upload =(e) => {
             e.preventDefault();
@@ -66,10 +47,20 @@ const CreateBlogpost = () => {
                 if(data.url)
                 {setLoader(false)
                 setUploadedFile(data.url)
-                setMessage({success:"image successfully uploded"})
+                ButterToast.raise({
+                    content: <Cinnamon.Crisp scheme={Cinnamon.Crisp.SCHEME_BLUE}
+                     content={() => <div>success</div>}
+                     title="ButterToast example"/>
+                })
+
+
                 }else{
                     setLoader(false)
-                    setMessage({error:"please try again . somthing went wrong !!"})
+                            ButterToast.raise({
+                             content: <Cinnamon.Crisp scheme={Cinnamon.Crisp.SCHEME_RED}
+                              content={() => <div>error</div>}
+                              title="ButterToast example"/>
+                         })
                 }
                 
                console.log(data)
@@ -92,7 +83,25 @@ const CreateBlogpost = () => {
                 user: user,
             }
 
-            dispatch(createblog(variables))
+            const onSuccess = () => {
+                ButterToast.raise({
+                    content: <Cinnamon.Crisp title="Post Box"
+                        content="Blog created successfully"
+                        scheme={Cinnamon.Crisp.SCHEME_PURPLE}
+                    />
+                })
+            }
+
+            const onError = () => {
+                ButterToast.raise({
+                    content: <Cinnamon.Crisp title="Post Box"
+                        content="somthing went wronr ! . please try again"
+                        scheme={Cinnamon.Crisp.SCHEME_PURPLE}
+                    />
+                })
+            }
+
+            dispatch(createblog(variables,onSuccess,onError))
             setTimeout(() => {
                  history.push('/blog')
              }, 2000);
@@ -101,8 +110,6 @@ const CreateBlogpost = () => {
         return(
         <div className="container mt-5">
         <h2>Create blog</h2>
-
-        {messages()}
 
         <div>
 
