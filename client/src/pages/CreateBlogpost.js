@@ -1,12 +1,10 @@
 import React,{useState,useEffect} from 'react'
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import axios from 'axios';
 import {useDispatch,useSelector} from 'react-redux';
 import {useHistory} from 'react-router-dom'
 import {createblog} from "../Actions/Actions"
-const token = localStorage.getItem("jwt")
-
+import Spinner from '../components/Spinner';
 
 const editorConfiguration = {
     // plugins: [CKFinder],
@@ -22,11 +20,16 @@ const CreateBlogpost = () => {
         const user = useSelector(state => state.authReducer.user)
         const [content, setContent] = useState("")
         const [title, setTitle] = useState("")
-        const [file, setFile] = useState()
         const [filename, setFilename] = useState('Choose File');
-        const [uploadedFile, setUploadedFile] = useState({});
+        const [uploadedFile, setUploadedFile] = useState();
         const [message, setMessage] = useState();
+        const [loader, setLoader] = useState(false);
+        const [userid, setUserId] = useState();
 
+
+        useEffect(() => {
+               setUserId(user?user._id:"")
+        }, [user])
 
 
         const messages = () =>{
@@ -47,24 +50,33 @@ const CreateBlogpost = () => {
         const Upload =(e) => {
             e.preventDefault();
 
-            setFile(e.target.files[0])
+            setLoader(true)
             setFilename(e.target.files[0].name)
+            const data = new FormData()
+            data.append("file",e.target.files[0])
+            data.append("upload_preset","insta-clone")
+            data.append("cloud_name","cnq")
 
-            let imageFormObj = new FormData();
-            imageFormObj.append("imageName", "multer-image-" + Date.now());
-            imageFormObj.append("imageData", e.target.files[0]);
-
-
-            axios.post('/api/blog/uploadfiles', imageFormObj).then(data => {
-                console.log(data.data.message)
-              if (data.data.success) {
-                //   console.log(data.data.document)
-                  setMessage(data.data.message)
-                  setUploadedFile(data.data.document)
-                alert("Image has been successfully uploaded using multer");
-              }
-            });
-
+            fetch("https://api.cloudinary.com/v1_1/joshi/image/upload",{
+                method:"post",
+                body:data
+            })
+            .then(res=>res.json())
+            .then(data=>{
+                if(data.url)
+                {setLoader(false)
+                setUploadedFile(data.url)
+                setMessage({success:"image successfully uploded"})
+                }else{
+                    setLoader(false)
+                    setMessage({error:"please try again . somthing went wrong !!"})
+                }
+                
+               console.log(data)
+            })
+            .catch(err=>{
+                console.log(err)
+            })
           }
 
         const onSubmit = (event) => {
@@ -77,24 +89,13 @@ const CreateBlogpost = () => {
                 title:title,
                 image:uploadedFile,
                 content: content,
-                userID: user._id,
+                user: user,
             }
 
             dispatch(createblog(variables))
             setTimeout(() => {
                  history.push('/blog')
              }, 2000);
-
-            // axios.post('/api/blog/createPost', variables,{ headers: {"Authorization" : `Bearer ${token}`} })
-            //     .then(response => {
-            //         if (response) {
-            //             console.log('Post Created!');
-
-            //             setTimeout(() => {
-            //                 history.push('/blog')
-            //             }, 2000);
-            //         }
-            //     })
         }
 
         return(
@@ -104,7 +105,7 @@ const CreateBlogpost = () => {
         {messages()}
 
         <div>
-{/* (e)=>setFileName(e.target.files[0].name) */}
+
         <div className="input-group mb-3">
         <form>
             <div className="custom-file">
@@ -116,7 +117,7 @@ const CreateBlogpost = () => {
             </form>
         </div>
 
-        <img style={{ width: '100%' }} src={`/uploads/${uploadedFile}`} alt='' />
+        {loader == true?<Spinner/>:<img style={{ width: '100%' }} src={uploadedFile} alt='' />}
 
         <div className="form-group">
             <label>Blog Title</label>

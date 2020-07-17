@@ -10,14 +10,14 @@ app.use('/uploads', express.static('uploads'));
 mongoose
   .connect(MONGO_URI,
     {
-        useCreateIndex: true,
-        useUnifiedTopology: true,
-        useNewUrlParser: true
+      useNewUrlParser:true,
+      useUnifiedTopology: true
     })
   .then(() => console.log("Mondodb Connected ...."))
   .catch(err => console.error(err));
 //---------model--------//
   require('./models/usermodel')
+  require("./models/Blog");
 
 //==========ROUTING========//
 

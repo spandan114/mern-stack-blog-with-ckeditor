@@ -1,4 +1,5 @@
 import React,{useEffect} from 'react'
+import ButterToast, { Cinnamon, POS_BOTTOM, POS_RIGHT } from 'butter-toast';
 import {useDispatch,useSelector} from 'react-redux';
 import { getAllblogs,Deleteblogs } from '../Actions/Actions'
 import {Link } from 'react-router-dom'
@@ -33,7 +34,7 @@ function BlogPage() {
 
                     <div className="card-body" style={{ height: 170, overflowY: 'scroll'}}>
                         <h3> {blog.title}</h3>
-                        <img style={{ width: '100%' }} src={`uploads/${blog.image}`} alt='' />
+                        <img style={{ width: '100%' }} src={blog.image} alt='' />
                         <div dangerouslySetInnerHTML={{ __html: blog.content }} />
                     </div>
 
@@ -52,13 +53,23 @@ function BlogPage() {
         return(
             <>{
             message?
-            <div className={`alert alert-dismissible fade show ${message.success?"alert-success":"alert-danger"} `} role="alert">
-                <strong>{message.success?message.success:message.error}</strong> 
-                <button type="button" className="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
+            <>
+                 {message.success?
+                    ButterToast.raise({
+                         content: <Cinnamon.Crisp scheme={Cinnamon.Crisp.SCHEME_BLUE}
+                          content={() => <div>{message.success}</div>}
+                          title="ButterToast example"/>
+                     })
+                 :
+                 ButterToast.raise({
+                    content: <Cinnamon.Crisp scheme={Cinnamon.Crisp.SCHEME_BLUE}
+                    content={() => <div>{message.error}.</div>}
+                    title="ButterToast example"/>
+                   })
+                 }
+                 </>
             :""
+            
             }
             </>
         )}

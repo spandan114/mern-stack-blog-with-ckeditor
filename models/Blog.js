@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const {ObjectId} = mongoose.Schema.Types;
+// const Schema = mongoose.Schema;
 
-const blogSchema = mongoose.Schema({
+const blogSchema = new mongoose.Schema({
     title: {
         type:String,
     },
@@ -18,13 +19,12 @@ const blogSchema = mongoose.Schema({
     tags: {
         type:String,
     },
-    writer: {
-        type: Schema.Types.ObjectId,
-        ref: 'User'
-    }
+    writer: { 
+        type:ObjectId,
+        ref: "User" 
+    },
+
 }, { timestamps: true })
 
 
-const Blog = mongoose.model('Blog', blogSchema);
-
-module.exports = { Blog }
+mongoose.model('Blog', blogSchema);

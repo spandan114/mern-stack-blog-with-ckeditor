@@ -26,53 +26,52 @@ const Routing = ()=>{
     }
   },[])
 
-  return(
-    
-    <Switch>
 
-      <Route exact path="/" >
-        <Homepage/>
-      </Route>
+    return(
+  
+      <Switch>
+        <Route exact path="/" >
+          <Homepage/>
+        </Route>
+        <Route exact path="/blog" >
+          <BlogPage/>
+        </Route>
+  
+        <Route exact path="/create" >
+          <CreateBlogpost/>
+        </Route>
+  
+        <Route exact path="/post/:id" >
+          <PostPage/>
+        </Route>
+  
+        <Route exact path="/editblog/:id" >
+          <EditBlog/>
+        </Route>
 
-      <Route exact path="/login" >
+        <Route exact path="/login" >
         <Loginpage/>
       </Route>
 
-      <Route exact path="/register" >
-        <Registerpage/>
-      </Route>
-
-      <Route exact path="/blog" >
-        <BlogPage/>
-      </Route>
-
-      <Route exact path="/create" >
-        <CreateBlogpost/>
-      </Route>
-
-      <Route exact path="/post/:id" >
-        <PostPage/>
-      </Route>
-
-      <Route exact path="/editblog/:id" >
-        <EditBlog/>
-      </Route>
-
-      <Route exact path="*" >
-        <ErrorPage/>
-      </Route>
-            
+     <Route exact path="/register" >
+       <Registerpage/>
+     </Route>
+  
+        <Route exact path="*" >
+          <ErrorPage/>
+        </Route>
     </Switch>
-  )
-}
+    )
+  }
+
 
 function App() {
   return (
     
     <Provider store={store}>
-      <BrowserRouter>
+      <BrowserRouter >
       <Navbarcomponent/>
-      <Routing />
+        <Routing />
     </BrowserRouter>
     </Provider>
 

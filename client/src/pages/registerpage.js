@@ -23,6 +23,8 @@ export default function Registerpage() {
     useEffect(() => {
       if(user !== null){
         history.push('/')
+      }else{
+        history.push('/register')
       }
     }, [user])
 

@@ -1,6 +1,5 @@
 import axios from "axios";
 const token = localStorage.getItem("jwt")
-console.log(token)
 
 export default {
     Blog(url = '/api/blog/') {

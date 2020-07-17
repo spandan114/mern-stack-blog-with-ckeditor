@@ -21,6 +21,8 @@ export default function Loginpage() {
     useEffect(() => {
       if(user !== null){
         history.push('/')
+      }else{
+        history.push('/login')
       }
     }, [user])
 
@@ -36,8 +38,6 @@ export default function Loginpage() {
       }
 
         dispatch(login(new_contact))
-        history.push('/')
-
       }
         
       return (

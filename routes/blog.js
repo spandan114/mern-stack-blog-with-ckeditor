@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { Blog } = require("../models/Blog");
+const mongoose = require('mongoose')
+const Blog = mongoose.model("Blog")
 const  auth  = require("../middleware/requireLogin");
 
 
@@ -55,31 +56,34 @@ router.post("/uploadfiles", upload.single("imageData"), (req, res) => {
   });
 
 router.post("/createPost",auth, (req, res) => {
-    let blog = new Blog({ content: req.body.content, writer: req.body.userID,title: req.body.title,image: req.body.image });
+    let blog = new Blog({ content: req.body.content, writer: req.body.user,title: req.body.title,image: req.body.image });
 
     blog.save((err, postInfo) => {
-        if (err) return res.json({ success: false, err });
-        return res.status(200).json({ success: true, postInfo })
+        if (err) return res.json({ success: false, err , message:{error:"Unable to create post" } });
+        return res.status(200).json({ success: true, postInfo ,message:{success:"post created successfully" } })
+        
     })
 });
 
 
 router.get("/getBlogs", (req, res) => {
-    Blog.find()
-        .populate("writer")
-        .exec((err, blogs) => {
-            if (err) return res.status(400).json({ success: false,message:{error:"somthing went wrong" }});
-            res.status(200).json({ success: true, blogs,message:{success:"successfully fetch all data" }});
-        });
+    Blog.find().populate("writer")
+        .then((blogs) => {
+           return res.status(200).json({ success: true, blogs,message:{success:"successfully fetch all data" }});
+        }).catch(err=>{
+           return res.status(400).json({ success: false,message:{error:"somthing went wrong" }});
+        })    
+
 });
 
 router.post("/getPost/:id", (req, res) => {
     Blog.findOne({ "_id": req.params.id })
         .populate('writer')
-        .exec((err, post) => {
-            if (err) return res.status(400).send(err);
+        .then(( post) => {
             res.status(200).json({ success: true, post })
-        })
+        }).catch(err=>{
+          return res.status(400).send(err);
+      })
 });
 
 router.put('/updatePost/:id',auth,(req,res) =>{
@@ -107,5 +111,6 @@ router.delete('/deletePost/:id',auth,(req,res) =>{
         console.log(err)
     })
 })
+
 
 module.exports = router;
