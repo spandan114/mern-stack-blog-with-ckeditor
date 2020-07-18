@@ -19,12 +19,12 @@ const CreateBlogpost = () => {
         const history = useHistory()
         const dispatch = useDispatch();
         const user = useSelector(state => state.authReducer.user)
-        const message = useSelector(state => state.BlogReducer.message)
         const [content, setContent] = useState("")
         const [title, setTitle] = useState("")
         const [filename, setFilename] = useState('Choose File');
         const [uploadedFile, setUploadedFile] = useState();
         const [loader, setLoader] = useState(false);
+        const [btnloader,setbtnLoader] = useState(false)
 
 
 
@@ -72,6 +72,7 @@ const CreateBlogpost = () => {
 
         const onSubmit = (event) => {
             event.preventDefault();
+            setbtnLoader(true)
             setContent("");
             if (user == null) {
                 return alert('Please Log in first');
@@ -90,6 +91,8 @@ const CreateBlogpost = () => {
                         scheme={Cinnamon.Crisp.SCHEME_PURPLE}
                     />
                 })
+                setbtnLoader(false)
+                history.push('/')
             }
 
             const onError = () => {
@@ -99,12 +102,13 @@ const CreateBlogpost = () => {
                         scheme={Cinnamon.Crisp.SCHEME_PURPLE}
                     />
                 })
+                setbtnLoader(false)
             }
 
             dispatch(createblog(variables,onSuccess,onError))
-            setTimeout(() => {
-                 history.push('/blog')
-             }, 2000);
+            // setTimeout(() => {
+            //      history.push('/blog')
+            //  }, 2000);
         }
 
         return(
@@ -147,7 +151,7 @@ const CreateBlogpost = () => {
         />
 
                 <form onSubmit={onSubmit}>
-                    <div style={{ textAlign: 'center', margin: '2rem', }}>
+                    {/* <div style={{ textAlign: 'center', margin: '2rem', }}>
                         <button
                             type="submit"
                             className="btn btn-success"
@@ -155,7 +159,13 @@ const CreateBlogpost = () => {
                         >
                             Submit
                     </button>
-                    </div>
+                    </div> */}
+                    {btnloader == false?<button className="btn btn-block m-3 btn-info" onSubmit={onSubmit}>Submit</button>:
+                       <button className="btn btn-block btn-info m-3" type="button" disabled>
+                          <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                           Loading...
+                       </button>
+                    }
                 </form>
             </div>
         </div>

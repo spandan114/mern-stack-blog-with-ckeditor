@@ -54,7 +54,7 @@ export default function Registerpage() {
               />
           })
           setLoader(false)
-          history.push('/')
+          history.push('/login')
       }
       const onError = () => {
         // setTimeout(() => {

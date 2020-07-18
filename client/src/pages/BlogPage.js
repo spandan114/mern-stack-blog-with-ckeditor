@@ -1,7 +1,6 @@
 import React,{useEffect} from 'react'
-import ButterToast, { Cinnamon} from 'butter-toast';
 import {useDispatch,useSelector} from 'react-redux';
-import { getAllblogs,Deleteblogs } from '../Actions/Actions'
+import { getAllblogs } from '../Actions/Actions'
 import {Link } from 'react-router-dom'
 import Spinner from '../components/Spinner'
 
@@ -9,25 +8,11 @@ function BlogPage() {
 
     const dispatch = useDispatch();
     const blog = useSelector(state => state.BlogReducer.blog)
-    // const message = useSelector(state => state.BlogReducer.message)
-
 
     useEffect(() => {
         dispatch(getAllblogs())
     },[])
 
-    const deletepost = id => {
-        const onSuccess = () => {
-            ButterToast.raise({
-                content: <Cinnamon.Crisp title="Post Box"
-                    content="Deleted successfully"
-                    scheme={Cinnamon.Crisp.SCHEME_PURPLE}
-                />
-            })
-        }
-        if (window.confirm('Are you sure to delete this record?'))
-           dispatch(Deleteblogs(id,onSuccess))
-    }
 
     const renderCards = blog?blog.map((blog, index) => {
         return(
@@ -47,10 +32,10 @@ function BlogPage() {
                         <div dangerouslySetInnerHTML={{ __html: blog.content }} />
                     </div>
 
-                    <div className="card-footer d-flex justify-content-between"  >
-                      <Link className="card-link" style={{color:'black'}} to={`/editblog/${blog._id}`} > <i className="fas fa-edit "/></Link>
+                    <div className="card-footer text-center"  >
+                      {/* <Link className="card-link" style={{color:'black'}} to={`/editblog/${blog._id}`} > <i className="fas fa-edit "/></Link> */}
                       <Link className="card-link" style={{color:'black'}} to={`/post/${blog._id}`}> <i className="fas fa-ellipsis-h "/></Link>
-                      <Link className="card-link" style={{color:'black'}} to="#" onClick={()=>deletepost(blog._id)} > <i className="fas fa-trash "/></Link>
+                      {/* <Link className="card-link" style={{color:'black'}} to="#" onClick={()=>deletepost(blog._id)} > <i className="fas fa-trash "/></Link> */}
                     </div>
               </div>
               </div>
@@ -59,8 +44,7 @@ function BlogPage() {
      
 
     return (
-        <>
-
+        
         <div className="container mt-3">
 
             <div className="d-flex justify-content-between">
@@ -79,7 +63,7 @@ function BlogPage() {
             {renderCards}
             </div>
         </div>
-        </>
+        
     )
 
 }

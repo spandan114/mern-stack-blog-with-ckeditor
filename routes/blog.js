@@ -29,6 +29,17 @@ router.get("/getBlogs", (req, res) => {
 
 });
 
+router.get('/mypost',auth,(req,res)=>{
+    Blog.find({writer:req.user._id})
+    .populate("writer")
+    .then(mypost=>{
+        return res.status(200).json({ success: true, mypost,message:{success:"successfully fetch all data" }});
+    })
+    .catch(err=>{
+        console.log(err)
+    })
+})
+
 router.post("/getPost/:id", (req, res) => {
     Blog.findOne({ "_id": req.params.id })
         .populate('writer')

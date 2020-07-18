@@ -25,20 +25,16 @@ export default function Navbarcomponent() {
         ]
     }else if(user != null){
       return [
-        <li className="nav-item " key={1}>
-        <Link className="nav-link text-white font-weight-bold" to="/"
-          >Home </Link>
-      </li>,
-      <li className="nav-item " key={2}>
-        <Link className="nav-link text-white font-weight-bold" to="/blog"
-          >Blog </Link>
-      </li>,
               <li className="nav-item " key={3}>
               <Link className="nav-link text-white font-weight-bold" to="/create"
                 >create </Link>
             </li>,
+                  <li className="nav-item " key={2}>
+                  <Link className="nav-link text-white font-weight-bold" to="/account"
+                    >Account </Link>
+                </li>,
       <li className="nav-item active" key={4}>
-      <Link className="nav-link font-weight-bolder" to="/login" 
+      <Link className="nav-link font-weight-bolder" to="" 
       onClick={()=>{
         localStorage.clear()
         dispatch(logout())
@@ -60,6 +56,7 @@ export default function Navbarcomponent() {
           className="navbar navbar-expand-lg navbar-dark bg-dark justify-content-sm-start  fixed-top"
       >
         <Link className="navbar-brand order-1 font-weight-bold order-lg-0 ml-3" to="/">BLOG </Link>
+
   
         {/* --mr-3 for left sidebar-- */}
         <button className="navbar-toggler align-self-start" type="button">
@@ -70,7 +67,9 @@ export default function Navbarcomponent() {
         id="navbarSupportedContent">
           {/* --add on-right class--  */}
           <ul className="navbar-nav navbar-left ml-auto ml-sm-0 ">
-
+         <li className="nav-item " key={1}>
+           <Link className="nav-link text-white font-weight-bold" to="/">Blog </Link>
+         </li>
           {renderList()}
 
 

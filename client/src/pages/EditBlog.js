@@ -6,7 +6,6 @@ import {useDispatch,useSelector} from 'react-redux';
 import {updateBlogs,getblogbyId} from '../Actions/Actions'
 import ButterToast, { Cinnamon } from "butter-toast";
 import Spinner from '../components/Spinner';
-// const token = localStorage.getItem("jwt")
 
 const editorConfiguration = {
     // plugins: [ Indent],
@@ -22,12 +21,13 @@ const EditBlog = () => {
         const dispatch = useDispatch();
         const blog = useSelector(state => state.BlogReducer.blog)
         const user = useSelector(state => state.authReducer.user)
-        const message = useSelector(state => state.BlogReducer.message)
         const [content, setContent] = useState()
         const [title, setTitle] = useState()
         const [filename, setFilename] = useState('Choose File');
         const [uploadedFile, setUploadedFile] = useState({});
         const [loader, setLoader] = useState(false);
+        const [btnloader,setbtnLoader] = useState(false)
+
 
         useEffect(() => {
             if(blog !== null){
@@ -84,6 +84,8 @@ const EditBlog = () => {
 
         const onSubmit = (event) => {
             event.preventDefault();
+
+            setbtnLoader(true)
             setContent("");
             if (user == null) {
                 return alert('Please Log in first');
@@ -101,6 +103,7 @@ const EditBlog = () => {
                         scheme={Cinnamon.Crisp.SCHEME_PURPLE}
                     />
                 })
+                setbtnLoader(false)
             }
 
             const onError = () => {
@@ -110,10 +113,11 @@ const EditBlog = () => {
                         scheme={Cinnamon.Crisp.SCHEME_PURPLE}
                     />
                 })
+                setbtnLoader(false)
             }
 
             dispatch(updateBlogs(id,variables,onSuccess,onError))
-            history.push('/Blog')
+            history.push('/')
 
         }
 
@@ -156,15 +160,12 @@ const EditBlog = () => {
         />
 
                 <form onSubmit={onSubmit}>
-                    <div style={{ textAlign: 'center', margin: '2rem', }}>
-                        <button
-                            type="submit"
-                            className="btn btn-success"
-                            onSubmit={onSubmit}
-                        >
-                            Submit
-                    </button>
-                    </div>
+                    {btnloader == false?<button className="btn btn-block m-3 btn-info" onSubmit={onSubmit}>Submit</button>:
+                       <button className="btn btn-block btn-info m-3" type="button" disabled>
+                          <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                           Loading...
+                       </button>
+                    }
                 </form>
 
             </div>

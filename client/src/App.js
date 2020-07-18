@@ -6,7 +6,7 @@ import store from "./store";
 import {relode} from './Actions/Actions'
 import ButterToast,{ POS_RIGHT,POS_TOP } from "butter-toast";
 import Navbarcomponent from './components/navbarcomponent'
-import Homepage from './pages/homepage';
+import Account from './pages/Account';
 import Loginpage from './pages/loginpage';
 import Registerpage from './pages/registerpage';
 import BlogPage from './pages/BlogPage';
@@ -31,10 +31,11 @@ const Routing = ()=>{
   
       <Switch>
         <Route exact path="/" >
-          <Homepage/>
-        </Route>
-        <Route exact path="/blog" >
           <BlogPage/>
+        </Route>
+
+        <Route exact path="/account" >
+          <Account/>
         </Route>
   
         <Route exact path="/create" >

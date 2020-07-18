@@ -72,6 +72,18 @@ export const getAllblogs = () => dispatch => {
       .catch(err => console.log(err))
 }
 
+  //FETCH MY BLOGS
+  export const getmyblogs = (id) => dispatch => {
+    blogapi.Blog().getmyblogs(id)
+        .then(res => {
+            dispatch({
+                type: blogconst.FETCH_MY_BLOGS,
+                payload: res.data.mypost
+            })
+        })
+        .catch(err => console.log(err))
+  }
+
   //UPDATE BLOGS
   export const updateBlogs = (id,data,onSuccess,onError) => dispatch => {
     blogapi.Blog().updateBlog(id,data)
