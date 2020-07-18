@@ -1,60 +1,77 @@
 import React,{useState,useEffect} from 'react'
 import {useDispatch,useSelector} from 'react-redux'
+import ButterToast, { Cinnamon } from "butter-toast";
 import {login} from '../Actions/Actions'
 import {
-    Container, Col,Alert,
+    Container, Col,
     FormGroup, Label, Input,
-    Button
+    Button,Form
   } from 'reactstrap';
   import {Link,useHistory} from 'react-router-dom'
 
 export default function Loginpage() {
 
     const user = useSelector(state => state.authReducer.user)
+    const message = useSelector(state => state.authReducer.message)
+
     const dispatch = useDispatch();
 
     const history = useHistory()
     const [password,setPasword] = useState("")
     const [email,setEmail] = useState("")
-    const [error,setError] = useState("")
-    const [spinner,setSpinner] = useState(false)
-    
+    const [loader,setLoader] = useState(false)
+
     useEffect(() => {
       if(user !== null){
         history.push('/')
-      }else{
-        history.push('/login')
       }
     }, [user])
 
 
       const PostData = ()=>{
-        setSpinner(true)
-        if(!/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email)){
-          setError("invalid email")
-            return
-        }
+
+        setLoader(true)
+
         const new_contact = {
           email:email,
           password:password
       }
 
-        dispatch(login(new_contact))
+      console.log(message)
+
+      const onSuccess = () => {
+        ButterToast.raise({
+            content: <Cinnamon.Crisp title="Sucess"
+                content="successfully logedin"
+                scheme={Cinnamon.Crisp.SCHEME_PURPLE}
+            />
+        })
+        setLoader(false)
+        history.push('/')
+    }
+    const onError = () => {
+      // setTimeout(() => {
+        ButterToast.raise({
+          content: <Cinnamon.Crisp title="Error"
+              content={message}
+              scheme={Cinnamon.Crisp.SCHEME_RED}
+          />
+      })
+      setLoader(false)
+     
+    // }, 3000);
+    }
+
+  dispatch(login(new_contact,onSuccess,onError))
       }
-        
+
       return (
-        <Container className="App border p-3 mt-5 shadow ">
-            
+        <Container className="App border p-3 shadow ">
+
         <h2 className="text-center">Sign In</h2>
 
-        {error?
-        <Alert color="danger">
-       {error}
-      </Alert>
-      :
-      ""
-      }
 
+      <Form>
           <Col>
             <FormGroup>
               <Label>Email</Label>
@@ -64,9 +81,10 @@ export default function Loginpage() {
                 id="exampleEmail"
                 placeholder="myemail@email.com"
                 value={email}
-                onChange={(e)=>setEmail(e.target.value)}
+                onChange={(e)=>setEmail(e.target.value)} 
+                required
               />
-              {/* <span className="text-danger" >Email is required.</span> */}
+              
             </FormGroup>
           </Col>
           <Col>
@@ -79,18 +97,19 @@ export default function Loginpage() {
                 placeholder="********"
                 value={password}
                 onChange={(e)=>setPasword(e.target.value)}
+                required
               />
             </FormGroup>
           </Col>
-           {spinner == false? <Button className="btn btn-block btn-info" onClick={()=>PostData()}>Login</Button>:
-           <button className="btn btn-block btn-info" type="button" disabled>
-             <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-               Loading...
-            </button>
-           }
+          {loader == false?<Button className="btn btn-block btn-info" onClick={()=>PostData()}>Login</Button>:
+          <button className="btn btn-block btn-info" type="button" disabled>
+               <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                 Loading...
+           </button>
+          }
+        </Form>
+          <Link className="text-danger" to="/register">Dont have an account ?</Link>
 
-          <Link className="text-danget" to="/Forhotpassword">Forhotpassword</Link>
-        
       </Container>
 
     )

@@ -59,12 +59,27 @@ function BlogPage() {
      
 
     return (
-        <div className="container mt-5">
-            <h1 > Blog Lists </h1>
-            <div className="row row-cols-1 row-cols-md-2">
+        <>
+
+        <div className="container mt-3">
+
+            <div className="d-flex justify-content-between">
+                <h1 > Blog Lists </h1>
+
+                <div className="d-flex ">
+                    <form className="form-inline my-2 my-lg-0">
+                        <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"/>
+                        <button className="btn btn-outline-dark my-2 my-sm-0" type="submit">Search</button>
+                    </form>
+                </div>
+
+            </div>
+            
+            <div className="row row-cols-1 mt-4 row-cols-md-2">
             {renderCards}
             </div>
         </div>
+        </>
     )
 
 }

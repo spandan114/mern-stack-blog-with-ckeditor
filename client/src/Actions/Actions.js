@@ -7,16 +7,28 @@ import * as blogconst from './constants/blogConstants'
 //===========================================USER ACTION===========================
 
 //REGISTER USER
-export const register = (contact) => dispatch => {
+export const register = (contact,onSuccess,onError) => dispatch => {
   api.User().register(contact)
       .then(res => {
-        console.log(res,contact)
+        console.log(res)
+        dispatch({
+          type: authconst.REGISTER,
+          payload: res.data
       })
-      .catch(err => console.log(err))
+      onSuccess()
+      })
+      .catch(err => {
+        console.log(err.response.data)
+        dispatch({
+          type: authconst.REGISTER,
+          payload: err.response.data
+      })
+      onError()
+      })
 }
-//LOGIN USER
-export const login = (contact) => dispatch => {
-
+//LOGIN USER 
+export const login = (contact,onSuccess,onError) => dispatch => {
+ 
     api.User().login(contact)
     .then(res =>{
       console.log(res)
@@ -24,8 +36,15 @@ export const login = (contact) => dispatch => {
           type: authconst.LOGIN,
           payload: res.data
       })
+      onSuccess()
   })
-  .catch(err => console.log(err))
+  .catch(err =>{
+    dispatch({
+      type: authconst.LOGIN,
+      payload: err.response.data
+  })
+  onError()
+  } )
 
   };
 //LOGOUT USER
