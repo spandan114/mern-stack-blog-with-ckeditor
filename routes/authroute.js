@@ -31,22 +31,6 @@ router.post("/register", (req, res) => {
       
               user.save()
               .then(user=>{
-
-                  var mailOptions = {
-                         from: 'spandanj685@gmail.com',
-                         to: user.email,
-                         subject: 'welcome '+user.name,
-                         text: 'welcome '+user.name
-                       };
-
-                     transporter.sendMail(mailOptions, function(error, info){
-                       if (error) {
-                         console.log(error);
-                       } else {
-                         console.log('Email sent: ' + info.response);
-                       }
-                     });
-
                   res.json({message:"saved successfully"+user.email})
               })
               .catch(err=>{

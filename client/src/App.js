@@ -4,9 +4,9 @@ import {BrowserRouter,Route,Switch} from 'react-router-dom'
 import {Provider} from 'react-redux';
 import store from "./store";
 import {relode} from './Actions/Actions'
-
+import ButterToast,{ POS_RIGHT,POS_TOP } from "butter-toast";
 import Navbarcomponent from './components/navbarcomponent'
-import Homepage from './pages/homepage';
+import Account from './pages/Account';
 import Loginpage from './pages/loginpage';
 import Registerpage from './pages/registerpage';
 import BlogPage from './pages/BlogPage';
@@ -26,53 +26,54 @@ const Routing = ()=>{
     }
   },[])
 
-  return(
-    
-    <Switch>
 
-      <Route exact path="/" >
-        <Homepage/>
-      </Route>
+    return(
+  
+      <Switch>
+        <Route exact path="/" >
+          <BlogPage/>
+        </Route>
 
-      <Route exact path="/login" >
+        <Route exact path="/account" >
+          <Account/>
+        </Route>
+  
+        <Route exact path="/create" >
+          <CreateBlogpost/>
+        </Route>
+  
+        <Route exact path="/post/:id" >
+          <PostPage/>
+        </Route>
+  
+        <Route exact path="/editblog/:id" >
+          <EditBlog/>
+        </Route>
+
+        <Route exact path="/login" >
         <Loginpage/>
       </Route>
 
-      <Route exact path="/register" >
-        <Registerpage/>
-      </Route>
-
-      <Route exact path="/blog" >
-        <BlogPage/>
-      </Route>
-
-      <Route exact path="/create" >
-        <CreateBlogpost/>
-      </Route>
-
-      <Route exact path="/post/:id" >
-        <PostPage/>
-      </Route>
-
-      <Route exact path="/editblog/:id" >
-        <EditBlog/>
-      </Route>
-
-      <Route exact path="*" >
-        <ErrorPage/>
-      </Route>
-            
+     <Route exact path="/register" >
+       <Registerpage/>
+     </Route>
+  
+        <Route exact path="*" >
+          <ErrorPage/>
+        </Route>
     </Switch>
-  )
-}
+    )
+  }
+
 
 function App() {
   return (
     
     <Provider store={store}>
-      <BrowserRouter>
+      <BrowserRouter >
       <Navbarcomponent/>
-      <Routing />
+      <ButterToast position={{vertical:POS_TOP,horizontal:POS_RIGHT}}/>
+        <Routing />
     </BrowserRouter>
     </Provider>
 
